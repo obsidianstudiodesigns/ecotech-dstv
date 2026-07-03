@@ -23,6 +23,16 @@ navLinks.querySelectorAll("a").forEach((a) =>
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
+// Autoplay safety net: some mobile browsers block or pause muted autoplay
+// (low-power mode, background tabs) — retry on load and first interaction
+const heroVids = document.querySelectorAll(".hero__video");
+const kickVideos = () =>
+  heroVids.forEach((v) => { if (v.paused) v.play().catch(() => {}); });
+window.addEventListener("load", kickVideos);
+document.addEventListener("visibilitychange", kickVideos);
+window.addEventListener("touchstart", kickVideos, { once: true, passive: true });
+window.addEventListener("scroll", kickVideos, { once: true, passive: true });
+
 // ---------- 2. Scroll reveal + counters ----------
 const io = new IntersectionObserver(
   (entries) => {
